@@ -28,7 +28,7 @@ class ScrollableCanvas(ttk.Canvas):
         Args:
             master (tk.Misc): master
         """
-        super().__init__(master, *args, *kwargs)
+        super().__init__(master, *args, **kwargs)
 
         # NOTE: ImageTk.PhotoImageは所有権が曖昧なので明示的にselfで所持します。
         self.iid:Optional[int] = None
