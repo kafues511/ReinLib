@@ -41,3 +41,18 @@ class Float2(Float2Abstract):
     @y.setter
     def y(self, new_value:float) -> None:
         self._y = new_value
+
+    @classmethod
+    def from_int(cls, x:int, y:int) -> "Float2":
+        """int2からfloat2を作成
+
+        暗黙的な変換を許容していないため明示的な呼び出しです。
+
+        Args:
+            x (int): _description_
+            y (int): _description_
+
+        Returns:
+            Float2: _description_
+        """
+        return cls(float(x), float(y))

@@ -5,6 +5,7 @@ __all__ = [
     "clamp",
     "saturate",
     "lerp",
+    "pow2",
 ]
 
 
@@ -54,3 +55,15 @@ def lerp(a:FloatOrInt, b:FloatOrInt, t:float) -> FloatOrInt:
         FloatOrInt: 補間された値
     """
     return (1.0 - t) * a + t * b
+
+
+def pow2(value:FloatOrInt) -> FloatOrInt:
+    """pow(value, 2)
+
+    Args:
+        value (FloatOrInt): 2乗する値
+
+    Returns:
+        FloatOrInt: 2乗
+    """
+    return value * value

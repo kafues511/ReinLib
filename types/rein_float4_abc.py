@@ -16,10 +16,10 @@ class Float4Abstract(ABC):
     _w:float = 0.0
 
     def __post_init__(self) -> None:
-        assert isinstance(self._x, float), f"{self}.x only supports float type, the input type was {self._x}."
-        assert isinstance(self._y, float), f"{self}.y only supports float type, the input type was {self._y}."
-        assert isinstance(self._z, float), f"{self}.z only supports float type, the input type was {self._z}."
-        assert isinstance(self._w, float), f"{self}.w only supports float type, the input type was {self._w}."
+        assert isinstance(self._x, float), f"Float4Abstract._x only supports float type, the input type was {self._x}."
+        assert isinstance(self._y, float), f"Float4Abstract._y only supports float type, the input type was {self._y}."
+        assert isinstance(self._z, float), f"Float4Abstract._z only supports float type, the input type was {self._z}."
+        assert isinstance(self._w, float), f"Float4Abstract._w only supports float type, the input type was {self._w}."
 
     @classmethod
     @abstractmethod
@@ -34,31 +34,31 @@ class Float4Abstract(ABC):
     def __iter__(self) -> Iterator[float]:
         return iter((self._x, self._y, self._z, self._w))
 
-    def __add__(self, rhs:float | Self) -> Self:
-        if isinstance(rhs, float):
+    def __add__(self, rhs:float | int | Self) -> Self:
+        if isinstance(rhs, (float, int)):
             return self.static_class(self._x + rhs, self._y + rhs, self._z + rhs, self._w + rhs)
         elif isinstance(rhs, Float4Abstract):
             return self.static_class(self._x + rhs._x, self._y + rhs._y, self._z + rhs._z, self._w + rhs._w)
         else:
             raise NotImplementedError()
 
-    def __sub__(self, rhs:float | Self) -> Self:
-        if isinstance(rhs, float):
+    def __sub__(self, rhs:float | int | Self) -> Self:
+        if isinstance(rhs, (float, int)):
             return self.static_class(self._x - rhs, self._y - rhs, self._z - rhs, self._w - rhs)
         elif isinstance(rhs, Float4Abstract):
             return self.static_class(self._x - rhs._x, self._y - rhs._y, self._z - rhs._z, self._w - rhs._w)
         else:
             raise NotImplementedError()
 
-    def __mul__(self, rhs:float | Self) -> Self:
-        if isinstance(rhs, float):
+    def __mul__(self, rhs:float | int | Self) -> Self:
+        if isinstance(rhs, (float, int)):
             return self.static_class(self._x * rhs, self._y * rhs, self._z * rhs, self._w * rhs)
         elif isinstance(rhs, Float4Abstract):
             return self.static_class(self._x * rhs._x, self._y * rhs._y, self._z * rhs._z, self._w * rhs._w)
         else:
             raise NotImplementedError()
 
-    def __div__(self, rhs:float | Self) -> Self:
+    def __truediv__(self, rhs:float | Self) -> Self:
         if isinstance(rhs, float):
             return self.static_class(self._x / rhs, self._y / rhs, self._z / rhs, self._w / rhs)
         elif isinstance(rhs, Float4Abstract):
@@ -80,3 +80,27 @@ class Float4Abstract(ABC):
         assert isinstance(sep, str), f"'sep' only supports str type, the input type was '{type(sep)}'."
         assert len(sep) > 0, "'sep' must be at least 1 character long."
         return cls(*[float(val) for val in value.split(sep)])
+
+    @classmethod
+    def from_int(cls, x:int, y:int, z:int, w:int) -> Self:
+        """_summary_
+
+        Args:
+            x (int): _description_
+            y (int): _description_
+            z (int): _description_
+            w (int): _description_
+
+        Returns:
+            Self: _description_
+        """
+        return cls(float(x), float(y), float(z), float(w))
+
+    @classmethod
+    def zero(cls) -> Self:
+        """_summary_
+
+        Returns:
+            Self: _description_
+        """
+        return cls(0.0, 0.0, 0.0, 0.0)

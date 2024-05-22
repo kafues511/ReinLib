@@ -58,7 +58,7 @@ class Int4Abstract(ABC):
         else:
             raise NotImplementedError()
 
-    def __div__(self, rhs:int | Self) -> Self:
+    def __truediv__(self, rhs:int | Self) -> Self:
         if isinstance(rhs, int):
             return self.static_class(self._x / rhs, self._y / rhs, self._z / rhs, self._w / rhs)
         elif isinstance(rhs, Int4Abstract):
@@ -80,6 +80,21 @@ class Int4Abstract(ABC):
         assert isinstance(sep, str), f"'sep' only supports str type, the input type was '{type(sep)}'."
         assert len(sep) > 0, "'sep' must be at least 1 character long."
         return cls(*[int(val) for val in value.split(sep)])
+
+    @classmethod
+    def from_float(cls, x:float, y:float, z:float, w:float) -> Self:
+        """_summary_
+
+        Args:
+            x (float): _description_
+            y (float): _description_
+            z (float): _description_
+            w (float): _description_
+
+        Returns:
+            Self: _description_
+        """
+        return cls(int(x), int(y), int(z), int(w))
 
     @classmethod
     def zero(cls) -> Self:

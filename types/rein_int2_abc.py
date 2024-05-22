@@ -56,13 +56,21 @@ class Int2Abstract(ABC):
         else:
             raise NotImplementedError()
 
-    def __div__(self, rhs:int | float | Self) -> Self:
+    def __truediv__(self, rhs:int | float | Self) -> Self:
         if isinstance(rhs, int):
             return self.static_class(self._x / rhs, self._y / rhs)
         elif isinstance(rhs, float):
             return self.static_class(float(self._x / rhs), float(self._y / rhs))
         elif isinstance(rhs, Int2Abstract):
             return self.static_class(self._x / rhs._x, self._y / rhs._y)
+        else:
+            raise NotImplementedError()
+
+    def __floordiv__(self, rhs:int | Self) -> Self:
+        if isinstance(rhs, int):
+            return self.static_class(self._x // rhs, self._y // rhs)
+        elif isinstance(rhs, Int2Abstract):
+            return self.static_class(self._x // rhs._x, self._y // rhs._y)
         else:
             raise NotImplementedError()
 
@@ -99,11 +107,30 @@ class Int2Abstract(ABC):
             raise NotImplementedError()
         return self
 
+    def __ifloordiv__(self, rhs:int | Self) -> Self:
+        if isinstance(rhs, int):
+            self._x //= rhs
+            self._y //= rhs
+        elif isinstance(rhs, Int2Abstract):
+            self._x //= rhs._x
+            self._y //= rhs._y
+        else:
+            raise NotImplementedError()
+        return self
+
     def __pos__(self) -> Self:
         return self.static_class(+self._x, +self._y)
 
     def __neg__(self) -> Self:
         return self.static_class(-self._x, -self._y)
+
+    def is_zero(self) -> bool:
+        """ゼロ値判定
+
+        Returns:
+            bool: 全要素がゼロ値の場合は True を返す
+        """
+        return self._x == 0 and self._y == 0
 
     @classmethod
     def max(cls, lhs:Self, rhs:Self) -> Self:
@@ -120,3 +147,7 @@ class Int2Abstract(ABC):
     @classmethod
     def one(cls) -> Self:
         return cls(1, 1)
+
+    @classmethod
+    def fill(cls, value:int) -> Self:
+        return cls(value, value)

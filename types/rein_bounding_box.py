@@ -153,3 +153,93 @@ class BoundingBox(Int4Abstract):
             tuple[int, int]: _description_
         """
         return self.h, self.w
+
+    @property
+    def wslice(self) -> slice:
+        """xmin ~ xmaxのsliceを取得
+
+        Returns:
+            slice: xmin ~ xmaxのslice
+        """
+        return slice(self.xmin, self.xmax, 1)
+
+    @property
+    def hslice(self) -> slice:
+        """ymin ~ ymaxのsliceを取得
+
+        Returns:
+            slice: ymin ~ ymaxのslice
+        """
+        return slice(self.ymin, self.ymax, 1)
+
+    @property
+    def whslice(self) -> tuple[slice, slice]:
+        """xmin ~ xmax, ymin ~ ymaxのsliceを取得
+
+        Returns:
+            tuple[slice, slice]: xmin ~ xmax, ymin ~ ymaxのslice
+        """
+        return self.wslice, self.hslice
+
+    @property
+    def hwslice(self) -> tuple[slice, slice]:
+        """ymin ~ ymax, xmin ~ xmaxのsliceを取得
+
+        Returns:
+            tuple[slice, slice]: ymin ~ ymax, xmin ~ xmaxのslice
+        """
+        return self.hslice, self.wslice
+
+    @property
+    def center(self) -> tuple[int, int]:
+        """中心座標を取得
+
+        Returns:
+            tuple[int, int]: 中心座標
+        """
+        return self.xmin + self.width//2, self.ymin + self.height//2
+
+    @property
+    def xymin(self) -> tuple[int, int]:
+        """xminとyminを取得
+
+        Returns:
+            tuple[int, int]: xminとymin
+        """
+        return self._x, self._y
+
+    @property
+    def xymax(self) -> tuple[int, int]:
+        """xmaxとymaxを取得
+
+        Returns:
+            tuple[int, int]: xmaxとymax
+        """
+        return self._z, self._w
+
+    def collision(self, rhs:"BoundingBox") -> bool:
+        return self.xmin <= rhs.xmax and rhs.xmin <= self.xmax and self.ymin <= rhs.ymax and rhs.ymin <= self.ymax
+
+    @property
+    def area(self) -> int:
+        """バウンディングボックスの面積を取得
+
+        Returns:
+            int: バウンディングボックスの面積
+        """
+        return self.width * self.height
+
+    @classmethod
+    def test(cls, bboxes:list["BoundingBox"]) -> "BoundingBox":
+        if len(bboxes) == 0:
+            return cls.zero()
+
+        bbox = cls(*bboxes[0])
+
+        for xmin, ymin, xmax, ymax in bboxes[1:]:
+            bbox.xmin = min(bbox.xmin, xmin)
+            bbox.ymin = min(bbox.ymin, ymin)
+            bbox.xmax = max(bbox.xmax, xmax)
+            bbox.ymax = max(bbox.ymax, ymax)
+
+        return bbox

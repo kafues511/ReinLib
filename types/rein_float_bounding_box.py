@@ -1,6 +1,8 @@
 from dataclasses import dataclass
+from typing import Self
 
 from reinlib.types.rein_float4_abc import Float4Abstract
+from reinlib.utility.rein_math import clamp
 
 
 __all__ = [
@@ -135,3 +137,13 @@ class FloatBoundingBox(Float4Abstract):
             float: 縦幅
         """
         return self.height
+
+    def collision(self, xmin:float, ymin:float, xmax:float, ymax:float) -> bool:
+        return self.xmin <= xmax and xmin <= self.xmax and self.ymin <= ymax and ymin <= self.ymax
+
+    def clamp(self, xmin:float, ymin:float, xmax:float, ymax:float) -> Self:
+        self.xmin = clamp(self.xmin, xmin, xmax)
+        self.ymin = clamp(self.ymin, ymin, ymax)
+        self.xmax = clamp(self.xmax, xmin, xmax)
+        self.ymax = clamp(self.ymax, ymin, ymax)
+        return self

@@ -560,6 +560,18 @@ class LayersWindow(ttk.Frame):
         for layer in self.layers:
             layer.grid(column=0, row=len(self.layers) - layer.depth)
 
+    def set_layer_name(self, lid:LayerId, layer_name:str) -> None:
+        """レイヤー名をセット
+
+        Args:
+            lid (LayerId): レイヤーID
+            layer_name (str): レイヤー名
+        """
+        for layer in self.layers:
+            if layer.lid == lid:
+                layer.layer_name = layer_name
+                break
+
     def set_thumbnail_image(self, lid:LayerId, image:npt.NDArray[np.uint8]) -> None:
         """サムネイル画像をセット
 
@@ -589,6 +601,8 @@ class LayerInfo:
     blend_mode:BlendMode = BlendMode.NORMAL
     # 可視性
     is_visible:bool = True
+    # レイヤーの位置固定化
+    is_fixed_position:bool = False
     # 最後に適用したスケール
     scale:float = 1.0
     # 位置 (スケール適用前)
@@ -1083,8 +1097,9 @@ class ImageLayerCanvas:
 
                 self.tk_canvas.move(self.layers_window_lid, xdiff_pixel, ydiff_pixel)
         elif (layer:=self.get_selecting_layer()) is not None:
-            layer.position += velocity * scale  # レイヤー位置はスケールを考慮します。
-            self.update_scene_color()
+            if not layer.is_fixed_position:
+                layer.position += velocity * scale  # レイヤー位置はスケールを考慮します。
+                self.update_scene_color()
 
         self.cursor_xy = new_cursor_xy
 
@@ -1185,8 +1200,9 @@ class ImageLayerCanvas:
             event (tk.Event): イベントプロパティ
         """
         if (layer:=self.get_selecting_layer()) is not None:
-            layer.position += velocity
-        self.update_scene_color()
+            if not layer.is_fixed_position:
+                layer.position += velocity
+                self.update_scene_color()
 
     def on_enter(self, event:tk.Event) -> None:
         """マウスカーソルがウィンドウ内に進入
@@ -1333,6 +1349,29 @@ class ImageLayerCanvas:
 
         # 描画更新
         self.update_scene_color()
+
+    def update_layer_info(
+        self,
+        lid:LayerId,
+        layer_name:Optional[str] = None,
+        is_fixed_position:Optional[bool] = None,
+    ) -> None:
+        """レイヤーの設定を更新
+
+        Args:
+            lid (LayerId): レイヤーID
+            layer_name (Optional[str], optional): レイヤー名. Defaults to None.
+            is_fixed_position (Optional[bool], optional): レイヤーの位置を固定化するか. Defaults to None.
+        """
+        # レイヤーを探します
+        if (layer:=self.find_layer(lid)) is None:
+            return
+
+        # レイヤー設定の更新
+        if layer_name is not None:
+            self.tk_layers_window.set_layer_name(lid, layer_name)
+        if is_fixed_position is not None:
+            layer.is_fixed_position = is_fixed_position
 
     def create_scrollregion(self, width:int, height:int) -> tuple[float, float, float, float]:
         """画像のハーフサイズまでスクロール可能な範囲を作成します。
