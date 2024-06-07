@@ -66,6 +66,14 @@ class Int4Abstract(ABC):
         else:
             raise NotImplementedError()
 
+    def is_zero(self) -> bool:
+        """ゼロ値判定
+
+        Returns:
+            bool: 全要素がゼロ値の場合は True を返す
+        """
+        return self._x == 0 and self._y == 0 and self._z == 0 and self._w == 0
+
     @classmethod
     def from_str(cls, value:str, sep:str) -> Self:
         """数値を4つ含む文字列から作成

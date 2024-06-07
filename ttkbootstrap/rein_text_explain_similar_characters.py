@@ -98,6 +98,7 @@ class TextExplainSimilarCharacters(ttk.Text):
     def __init__(
         self,
         master:tk.Misc,
+        width:int = 80,
         height:int = 4,
         family:str = "MotoyaLMaru",
         size:int = 18,
@@ -109,6 +110,7 @@ class TextExplainSimilarCharacters(ttk.Text):
 
         Args:
             master (tk.Misc): master
+            width (int, optional): 表示幅. Defaults to 80.
             height (int, optional): 表示行数. Defaults to 4.
             family (str, optional): フォント名. Defaults to "MotoyaLMaru".
             size (int, optional): フォントサイズ. Defaults to 18.
@@ -116,7 +118,7 @@ class TextExplainSimilarCharacters(ttk.Text):
             spacing2 (int, optional): 行間の間隔. Defaults to 10.
             spacing3 (int, optional): 最後の行の後のスペース. Defaults to 10.
         """
-        super().__init__(master)
+        super().__init__(master, width=width)
 
         # 文字の種類ごとのフォント設定
         self.default_font = Font(self, family=family, size=size, weight="normal")
@@ -146,6 +148,14 @@ class TextExplainSimilarCharacters(ttk.Text):
             "＋": "記号",
             "ｘ": "小文字",
             "×": "記号",
+            "ニ": "カタカナ",
+            "二": "漢数字",
+            "へ": "ひらがな",
+            "ヘ": "カタカナ",
+            "べ": "ひらがな",
+            "ベ": "カタカナ",
+            "ぺ": "ひらがな",
+            "ペ": "カタカナ",
         }
 
         # register callbacks
@@ -438,6 +448,22 @@ class TextExplainSimilarCharacters(ttk.Text):
         """select_rangeの後に呼ばれる
         """
         pass
+
+    def set_text(self, text:str) -> None:
+        """テキストをセット
+
+        Args:
+            text (str): テキスト
+        """
+        # 類似文字の説明を付与したデータリストを作成
+        insert_data_list = self.text_to_insert_data_list(text)
+
+        # 現在のテキストを全削除
+        self.delete("1.0", END)
+
+        # テキストの入れ替え
+        for insert_data in insert_data_list:
+            self.insert(INSERT, *insert_data)
 
     def get_sel_first(self) -> IndexData:
         """範囲選択の先頭の位置を取得

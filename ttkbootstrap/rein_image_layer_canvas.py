@@ -572,6 +572,18 @@ class LayersWindow(ttk.Frame):
                 layer.layer_name = layer_name
                 break
 
+    def set_is_visible(self, lid:LayerId, is_visible:bool) -> None:
+        """可視性をセット
+
+        Args:
+            lid (LayerId): レイヤーID
+            is_visible (bool): 可視性
+        """
+        for layer in self.layers:
+            if layer.lid == lid:
+                layer.is_visible = is_visible
+                break
+
     def set_thumbnail_image(self, lid:LayerId, image:npt.NDArray[np.uint8]) -> None:
         """サムネイル画像をセット
 
@@ -1355,6 +1367,7 @@ class ImageLayerCanvas:
         lid:LayerId,
         layer_name:Optional[str] = None,
         is_fixed_position:Optional[bool] = None,
+        is_visible:Optional[bool] = None,
     ) -> None:
         """レイヤーの設定を更新
 
@@ -1362,6 +1375,7 @@ class ImageLayerCanvas:
             lid (LayerId): レイヤーID
             layer_name (Optional[str], optional): レイヤー名. Defaults to None.
             is_fixed_position (Optional[bool], optional): レイヤーの位置を固定化するか. Defaults to None.
+            is_visible (Optional[bool], optional): レイヤーの可視性. Defaults to None.
         """
         # レイヤーを探します
         if (layer:=self.find_layer(lid)) is None:
@@ -1372,6 +1386,9 @@ class ImageLayerCanvas:
             self.tk_layers_window.set_layer_name(lid, layer_name)
         if is_fixed_position is not None:
             layer.is_fixed_position = is_fixed_position
+        if is_visible is not None:
+            layer.is_visible = is_visible
+            self.tk_layers_window.set_is_visible(lid, is_visible)
 
     def create_scrollregion(self, width:int, height:int) -> tuple[float, float, float, float]:
         """画像のハーフサイズまでスクロール可能な範囲を作成します。
