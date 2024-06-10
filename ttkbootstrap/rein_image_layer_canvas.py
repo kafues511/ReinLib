@@ -1342,12 +1342,13 @@ class ImageLayerCanvas:
         self.layers.append(layer)
         return layer.lid
 
-    def update_layer_image(self, lid:LayerId, image:npt.NDArray[np.uint8]) -> None:
+    def update_layer_image(self, lid:LayerId, image:npt.NDArray[np.uint8], is_update_scene_color:bool = True) -> None:
         """レイヤーの画像を更新
 
         Args:
             lid (LayerId): レイヤーID
             image (npt.NDArray[np.uint8]): 画像 (RGBA)
+            is_update_scene_color (bool, optional): SceneColorを更新するか. Defaults to True.
         """
         # レイヤーを探します
         if (layer:=self.find_layer(lid)) is None:
@@ -1360,7 +1361,8 @@ class ImageLayerCanvas:
         self.tk_layers_window.set_thumbnail_image(lid, image)
 
         # 描画更新
-        self.update_scene_color()
+        if is_update_scene_color:
+            self.update_scene_color()
 
     def update_layer_info(
         self,

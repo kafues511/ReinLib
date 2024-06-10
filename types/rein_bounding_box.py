@@ -220,6 +220,12 @@ class BoundingBox(Int4Abstract):
     def collision(self, rhs:"BoundingBox") -> bool:
         return self.xmin <= rhs.xmax and rhs.xmin <= self.xmax and self.ymin <= rhs.ymax and rhs.ymin <= self.ymax
 
+    def collisions(self, rhs:list["BoundingBox"]) -> bool:
+        for bbox in rhs:
+            if self.collision(bbox):
+                return True
+        return False
+
     @property
     def area(self) -> int:
         """バウンディングボックスの面積を取得

@@ -1,5 +1,6 @@
-from typing import Union, Iterator, Self
 from dataclasses import dataclass
+
+from reinlib.types.rein_int4_abc import Int4Abstract
 
 
 __all__ = [
@@ -8,153 +9,93 @@ __all__ = [
 
 
 @dataclass
-class Int4:
-    x:int = 0
-    y:int = 0
-    z:int = 0
-    w:int = 0
+class Int4(Int4Abstract):
+    def __init__(
+        self,
+        x:int,
+        y:int,
+        z:int,
+        w:int,
+    ) -> None:
+        super().__init__(x, y, z, w)
+
+    @classmethod
+    def static_class(cls, *args, **kwargs) -> "Int4":
+        """_summary_
+
+        Returns:
+            Int4: _description_
+        """
+        return Int4(*args, **kwargs)
 
     @property
-    def xyzw(self) -> tuple[int, int, int, int]:
-        return self.x, self.y, self.z, self.w
+    def x(self) -> int:
+        """x座標を取得
+
+        Returns:
+            int: X座標
+        """
+        return self._x
+
+    @x.setter
+    def x(self, new_value:int) -> None:
+        """x座標をセット
+
+        Args:
+            new_value (int): x座標
+        """
+        self._x = new_value
 
     @property
-    def xy(self) -> tuple[int, int]:
-        return self.x, self.y
+    def y(self) -> int:
+        """y座標を取得
+
+        Returns:
+            int: y座標
+        """
+        return self._y
+
+    @y.setter
+    def y(self, new_value:int) -> None:
+        """y座標をセット
+
+        Args:
+            new_value (int): y座標
+        """
+        self._y = new_value
 
     @property
-    def zw(self) -> tuple[int, int]:
-        return self.z, self.w
+    def z(self) -> int:
+        """z座標を取得
 
-    def __iter__(self) -> Iterator[int]:
-        return iter((self.x, self.y, self.z, self.w))
+        Returns:
+            int: z座標
+        """
+        return self._z
 
-    def __add__(self, rhs:Union[int, float, tuple[int, int, int, int], list[int], Self]) -> Self:
-        if isinstance(rhs, (tuple, list)):
-            assert len(rhs) == 4, "not match lenght"
-            return Int4(self.x + rhs[0], self.y + rhs[1], self.z + rhs[2], self.w + rhs[3])
-        elif isinstance(rhs, int):
-            return Int4(self.x + rhs, self.y + rhs, self.z + rhs, self.w + rhs)
-        elif isinstance(rhs, float):
-            return Int4(int(self.x + rhs), int(self.y + rhs), int(self.z + rhs), int(self.w + rhs))
-        elif isinstance(rhs, Int4):
-            return Int4(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z, self.w + rhs.w)
-        else:
-            assert False, "not support types"
+    @z.setter
+    def z(self, new_value:int) -> None:
+        """z座標をセット
 
-    def __sub__(self, rhs:Union[int, float, tuple[int, int, int, int], list[int], Self]) -> Self:
-        if isinstance(rhs, (tuple, list)):
-            assert len(rhs) == 4, "not match lenght"
-            return Int4(self.x - rhs[0], self.y - rhs[1], self.z - rhs[2], self.w - rhs[3])
-        elif isinstance(rhs, int):
-            return Int4(self.x - rhs, self.y - rhs, self.z - rhs, self.w - rhs)
-        elif isinstance(rhs, float):
-            return Int4(int(self.x - rhs), int(self.y - rhs), int(self.z - rhs), int(self.w - rhs))
-        elif isinstance(rhs, Int4):
-            return Int4(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z, self.w - rhs.w)
-        else:
-            assert False, "not support types"
+        Args:
+            new_value (int): z座標
+        """
+        self._z = new_value
 
-    def __mul__(self, rhs:Union[int, float, tuple[int, int, int, int], list[int], Self]) -> Self:
-        if isinstance(rhs, (tuple, list)):
-            assert len(rhs) == 4, "not match lenght"
-            return Int4(self.x * rhs[0], self.y * rhs[1], self.z * rhs[2], self.w * rhs[3])
-        elif isinstance(rhs, int):
-            return Int4(self.x * rhs, self.y * rhs, self.z * rhs, self.w * rhs)
-        elif isinstance(rhs, float):
-            return Int4(int(self.x * rhs), int(self.y * rhs), int(self.z * rhs), int(self.w * rhs))
-        elif isinstance(rhs, Int4):
-            return Int4(self.x * rhs.x, self.y * rhs.y, self.z * rhs.z, self.w * rhs.w)
-        else:
-            assert False, "not support types"
+    @property
+    def w(self) -> int:
+        """w座標を取得
 
-    def __floordiv__(self, rhs:Union[int, float, tuple[int, int], list[int], Self]) -> Self:
-        if isinstance(rhs, (tuple, list)):
-            assert len(rhs) == 4, "not match lenght"
-            return Int4(self.x//rhs[0], self.y//rhs[1])
-        elif isinstance(rhs, int):
-            return Int4(self.x//rhs, self.y//rhs, self.z//rhs, self.w//rhs)
-        elif isinstance(rhs, float):
-            return Int4(self.x//int(rhs), self.y//int(rhs), self.z//int(rhs), self.w//int(rhs))
-        elif isinstance(rhs, Int4):
-            return Int4(self.x//rhs.x, self.y//rhs.y, self.z//rhs.z, self.w//rhs.w)
-        else:
-            assert False, "not support types"
+        Returns:
+            int: w座標
+        """
+        return self._w
 
-    def __iadd__(self, rhs:Union[int, float, tuple[int, int, int, int], list[int], Self]) -> Self:
-        if isinstance(rhs, (tuple, list)):
-            assert len(rhs) == 4, "not match lenght"
-            self.x += rhs[0]
-            self.y += rhs[1]
-            self.z += rhs[2]
-            self.w += rhs[3]
-        elif isinstance(rhs, int):
-            self.x += rhs
-            self.y += rhs
-            self.z += rhs
-            self.w += rhs
-        elif isinstance(rhs, float):
-            self.x += int(rhs)
-            self.y += int(rhs)
-            self.z += int(rhs)
-            self.w += int(rhs)
-        elif isinstance(rhs, Int4):
-            self.x += rhs.x
-            self.y += rhs.y
-            self.z += rhs.z
-            self.w += rhs.w
-        else:
-            assert False, "not support types"
-        return self
+    @w.setter
+    def w(self, new_value:int) -> None:
+        """w座標をセット
 
-    def __isub__(self, rhs:Union[int, float, tuple[int, int, int, int], list[int], Self]) -> Self:
-        if isinstance(rhs, (tuple, list)):
-            assert len(rhs) == 4, "not match lenght"
-            self.x -= rhs[0]
-            self.y -= rhs[1]
-            self.z -= rhs[2]
-            self.w -= rhs[3]
-        elif isinstance(rhs, int):
-            self.x -= rhs
-            self.y -= rhs
-            self.z -= rhs
-            self.w -= rhs
-        elif isinstance(rhs, float):
-            self.x -= int(rhs)
-            self.y -= int(rhs)
-            self.z -= int(rhs)
-            self.w -= int(rhs)
-        elif isinstance(rhs, Int4):
-            self.x -= rhs.x
-            self.y -= rhs.y
-            self.z -= rhs.z
-            self.w -= rhs.w
-        else:
-            assert False, "not support types"
-        return self
-
-    def __ifloordiv__(self, rhs:Union[int, float, tuple[int, int, int, int], list[int], Self]) -> Self:
-        if isinstance(rhs, (tuple, list)):
-            assert len(rhs) == 4, "not match lenght"
-            self.x //= rhs[0]
-            self.y //= rhs[1]
-            self.z //= rhs[2]
-            self.w //= rhs[3]
-        elif isinstance(rhs, int):
-            self.x //= rhs
-            self.y //= rhs
-            self.z //= rhs
-            self.w //= rhs
-        elif isinstance(rhs, float):
-            self.x //= int(rhs)
-            self.y //= int(rhs)
-            self.z //= int(rhs)
-            self.w //= int(rhs)
-        elif isinstance(rhs, Int4):
-            self.x //= rhs.x
-            self.y //= rhs.y
-            self.z //= rhs.z
-            self.w //= rhs.w
-        else:
-            assert False, "not support types"
-        return self
+        Args:
+            new_value (int): w座標
+        """
+        self._w = new_value
