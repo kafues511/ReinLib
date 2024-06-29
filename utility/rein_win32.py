@@ -7,12 +7,15 @@ import ctypes.wintypes
 from functools import partial
 from dataclasses import dataclass
 from typing import Optional, Callable
+import warnings
 
 
 __all__ = [
     "WindowInfo",
     "get_window_info_list",
     "foreground_window",
+    "extended_frame_bounds",
+    "get_window_rect",
     "get_window_bbox",
 ]
 
@@ -156,7 +159,7 @@ def foreground_window(
         win32com.client.Dispatch("WScript.Shell").SendKeys(after_dispatch)
 
 
-def get_window_bbox(hwnd:int) -> tuple[int, int, int, int]:
+def extended_frame_bounds(hwnd:int) -> tuple[int, int, int, int]:
     """ウィンドウ領域を取得
 
     不正なウィンドウハンドルの場合はウィンドウ領域はゼロです。
@@ -173,5 +176,43 @@ def get_window_bbox(hwnd:int) -> tuple[int, int, int, int]:
         ctypes.wintypes.DWORD(DWMWA_EXTENDED_FRAME_BOUNDS),
         ctypes.byref(rect),
         ctypes.sizeof(rect),
+    )
+    return rect.left, rect.top, rect.right, rect.bottom
+
+
+def get_window_bbox(hwnd:int) -> tuple[int, int, int, int]:
+    """ウィンドウ領域を取得
+
+    不正なウィンドウハンドルの場合はウィンドウ領域はゼロです。
+
+    Args:
+        hwnd (int): 対象のウィンドウハンドル
+
+    Returns:
+        tuple[int, int, int, int]: xmin, ymin, xmax, ymaxを返す
+    """
+    warnings.warn(
+        "get_window_bbox(..) has been deprecated use extended_frame_bounds(..) instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return extended_frame_bounds(hwnd)
+
+
+def get_window_rect(hwnd) -> tuple[int, int, int, int]:
+    """ウィンドウ領域を取得
+
+    不正なウィンドウハンドルの場合はウィンドウ領域はゼロです。
+
+    Args:
+        hwnd (int): 対象のウィンドウハンドル
+
+    Returns:
+        tuple[int, int, int, int]: xmin, ymin, xmax, ymaxを返す
+    """
+    rect = ctypes.wintypes.RECT()
+    ctypes.windll.user32.GetWindowRect(
+        hwnd,
+        ctypes.byref(rect),
     )
     return rect.left, rect.top, rect.right, rect.bottom
