@@ -14,7 +14,7 @@ __all__ = [
     "WindowInfo",
     "get_window_info_list",
     "foreground_window",
-    "extended_frame_bounds",
+    "get_extended_frame_bounds",
     "get_window_rect",
     "get_window_bbox",
 ]
@@ -159,7 +159,7 @@ def foreground_window(
         win32com.client.Dispatch("WScript.Shell").SendKeys(after_dispatch)
 
 
-def extended_frame_bounds(hwnd:int) -> tuple[int, int, int, int]:
+def get_extended_frame_bounds(hwnd:int) -> tuple[int, int, int, int]:
     """ウィンドウ領域を取得
 
     不正なウィンドウハンドルの場合はウィンドウ領域はゼロです。
@@ -192,11 +192,11 @@ def get_window_bbox(hwnd:int) -> tuple[int, int, int, int]:
         tuple[int, int, int, int]: xmin, ymin, xmax, ymaxを返す
     """
     warnings.warn(
-        "get_window_bbox(..) has been deprecated use extended_frame_bounds(..) instead.",
+        "get_window_bbox(..) has been deprecated use get_extended_frame_bounds(..) instead.",
         DeprecationWarning,
         stacklevel=2,
     )
-    return extended_frame_bounds(hwnd)
+    return get_extended_frame_bounds(hwnd)
 
 
 def get_window_rect(hwnd) -> tuple[int, int, int, int]:
